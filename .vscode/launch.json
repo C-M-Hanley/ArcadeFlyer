@@ -6,7 +6,7 @@
 			"type": "coreclr",
 			"request": "launch",
 			"preLaunchTask": "Build Client",
-			"program": "${workspaceFolder}/bin/Debug/netcoreapp3.0/ArcadeFlyer.dll",
+			"program": "${workspaceFolder}/bin/Debug/netcoreapp2.1/ArcadeFlyer.dll",
 			"args": [],
 			"cwd": "${workspaceFolder}/",
 			"console": "internalConsole",
