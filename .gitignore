@@ -3,3 +3,6 @@ bin
 Content/obj
 Content/bin
 Thumbs.db
+
+.fake
+.ionide
