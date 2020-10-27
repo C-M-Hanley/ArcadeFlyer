@@ -14,6 +14,23 @@ namespace ArcadeFlyer2D
 
 
         private Texture2D playerImage;
+
+        private Player player;
+
+        private int screenWidth = 1600;
+        public int ScreenWidth
+        {
+            get { return screenWidth; }
+            set { screenWidth = ScreenWidth; }
+        }
+
+        private int screenHeight = 900;
+        public int ScreenHeight
+        {
+            get { return screenHeight; }
+            set { screenHeight = value; }
+        }
+        
         
         // Initalized the game
         public ArcadeFlyerGame()
@@ -22,8 +39,8 @@ namespace ArcadeFlyer2D
             graphics = new GraphicsDeviceManager(this);
 
             // Set the height and width
-            graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
             graphics.ApplyChanges();
 
             // Set up the directory containing the assets
@@ -31,6 +48,9 @@ namespace ArcadeFlyer2D
 
             // Make mouse visible
             IsMouseVisible = true;
+
+            Vector2 posistion = new Vector2(0.0f, 0.0f);
+            player = new Player(this, posistion);
         }
 
         // Initialize
@@ -42,7 +62,7 @@ namespace ArcadeFlyer2D
         // Load the content for the game, called automatically on start
         protected override void LoadContent()
         {
-            playerImage = Content.Load<Texture2D>("MainChar");
+            // playerImage = Content.Load<Texture2D>("MainChar");
             // Create the sprite batch
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
@@ -50,6 +70,8 @@ namespace ArcadeFlyer2D
         // Called every frame
         protected override void Update(GameTime gameTime)
         {   
+            player.Update(gameTime);
+
             // Update base game
             base.Update(gameTime);
         }
@@ -62,9 +84,11 @@ namespace ArcadeFlyer2D
 
             spriteBatch.Begin();
             // drawing happens here
-            Rectangle playerDestinationRect = new Rectangle(0,0,playerImage.Width, playerImage.Height);
-            spriteBatch.Draw(playerImage, playerDestinationRect, Color.White);
+            // Rectangle playerDestinationRect = new Rectangle(0,0,playerImage.Width, playerImage.Height);
+            
+            // spriteBatch.Draw(playerImage, playerDestinationRect, Color.White);
 
+            player.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
         }
