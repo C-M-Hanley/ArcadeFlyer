@@ -10,20 +10,15 @@ namespace ArcadeFlyer2D
 
         private float movementSpeed = 4.0f;
 
-        private float projectileCoolDownTime = 0.5f;
-
-        // A timer for the projectile cool down
-        private float projectileTimer = 0.0f;
-        
-
-        // Is the player currently cooling down?
-        private bool projectileTimerActive = false;
+         private Timer projectileCoolDown;
 
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             this.root = root;
             this.position = position;
             this.SpriteWidth = 128.0f;
+
+            projectileCoolDown = new Timer(0.5f);
 
             LoadContent();
         }
@@ -39,7 +34,8 @@ namespace ArcadeFlyer2D
             bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
             bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
             bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
-            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);   
+            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space); 
+              
 
             if (upKeyPressed)
             {
@@ -61,16 +57,15 @@ namespace ArcadeFlyer2D
                 position.X += movementSpeed;
             }
 
-            if (!projectileTimerActive && currentKeyboardState.IsKeyDown(Keys.Space))   
+            if (spaceKeyPressed && !projectileCoolDown.Active)   
             {
                 Vector2 projectilePosition;
                 Vector2 projectileVelocity;
 
                 projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 2));
                 projectileVelocity = new Vector2(10.0f, 0.0f);
-                root.FireProjectile(projectilePosition, projectileVelocity);
-                projectileTimerActive = true;
-                projectileTimer = 0.0f;
+                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
+                projectileCoolDown.StartTimer();
             }
         }
 
@@ -80,15 +75,7 @@ namespace ArcadeFlyer2D
 
             HandleInput(currentKeyboardState);
 
-            if (projectileTimerActive)
-            {
-                projectileTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (projectileTimer >= projectileCoolDownTime)
-                {
-                    projectileTimerActive = false;
-                }
-            }
+           projectileCoolDown.Update(gameTime);
         }
     }
 }

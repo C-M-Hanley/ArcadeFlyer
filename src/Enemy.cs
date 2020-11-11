@@ -8,7 +8,7 @@ namespace ArcadeFlyer2D
     {
         private ArcadeFlyerGame root;
 
-
+        private Timer projectileCoolDown;
         private Vector2 velocity;
 
         public Enemy(ArcadeFlyerGame root, Vector2 position) : base(position)
@@ -17,20 +17,33 @@ namespace ArcadeFlyer2D
             this.position = position;
             this.SpriteWidth = 128.0f;
             this.velocity = new Vector2(-1.0f, 5.0f);
+            this.projectileCoolDown = new Timer(2.0f);
 
             LoadContent();
         }
 
-            public void LoadContent(){
-                this.SpriteImage = root.Content.Load<Texture2D>("rhino");
-            }
+        public void LoadContent()
+        {
+            this.SpriteImage = root.Content.Load<Texture2D>("rhino");
+        }
 
-            public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             position += velocity;
             if (position.Y < 0 || position.Y > (root.ScreenHeight - SpriteHeight))
             {
                 velocity.Y *= -1;
+            }
+            projectileCoolDown.Update(gameTime);
+
+            if (!projectileCoolDown.Active)
+            {
+            projectileCoolDown.StartTimer();    
+            Vector2 projectilePosition = new Vector2(position.X, position.Y + SpriteHeight / 2);
+            Vector2 projectileVelocity = new Vector2(-5.0f, 0.0f);
+
+            root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Enemy);
+            
             }
         }
     }

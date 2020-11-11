@@ -21,6 +21,8 @@ namespace ArcadeFlyer2D
 
         private Texture2D playerProjectileSprite;
 
+        private Texture2D enemyProjectileSprite;
+
         private int screenWidth = 1600;
         public int ScreenWidth
         {
@@ -70,7 +72,8 @@ namespace ArcadeFlyer2D
             // playerImage = Content.Load<Texture2D>("MainChar");
             // Create the sprite batch
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            playerProjectileSprite= Content.Load<Texture2D>("PlayerFire");
+            playerProjectileSprite = Content.Load<Texture2D>("Arrows");
+            enemyProjectileSprite = Content.Load<Texture2D>("EnemyFire");
         }
 
         // Called every frame
@@ -102,6 +105,7 @@ namespace ArcadeFlyer2D
 
             player.Draw(gameTime, spriteBatch);
             enemy.Draw(gameTime, spriteBatch);
+            
             foreach (Projectile p in projectiles)
             {
                 p.Draw(gameTime, spriteBatch);
@@ -110,10 +114,21 @@ namespace ArcadeFlyer2D
             spriteBatch.End();
         }
 
-        public void FireProjectile(Vector2 position, Vector2 velocity)
+        public void FireProjectile(Vector2 position, Vector2 velocity, ProjectileType projectileType)
         {
-            Projectile firedProjectile = new Projectile(position, velocity, playerProjectileSprite);
+
+            Texture2D projectileTexture;
             
+            if (projectileType == ProjectileType.Player)
+            {
+                projectileTexture = playerProjectileSprite;
+            }
+            else
+            {
+                projectileTexture = enemyProjectileSprite;
+            }
+
+            Projectile firedProjectile = new Projectile(position, velocity, projectileTexture);
             projectiles.Add(firedProjectile);
         }
     }
