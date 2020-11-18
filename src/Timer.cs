@@ -10,11 +10,10 @@ namespace ArcadeFlyer2D
 
         private float currentTime;
         
-        public bool Active 
-        { 
-            get; 
-            private set; 
-        }
+        public bool Active { get; private set;}
+
+        public bool Ready{ get {return !this.Active;}}
+    
         public Timer(float totalTime)
         {
             this.endTime = totalTime;

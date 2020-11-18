@@ -16,7 +16,7 @@ namespace ArcadeFlyer2D
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 128.0f;
+            this.SpriteWidth = 200.0f;
 
             projectileCoolDown = new Timer(0.5f);
 
@@ -25,7 +25,7 @@ namespace ArcadeFlyer2D
 
         public void LoadContent()
         {
-            this.SpriteImage = root.Content.Load<Texture2D>("MainChar");
+            this.SpriteImage = root.Content.Load<Texture2D>("Hunter");
         }
 
         private void HandleInput(KeyboardState currentKeyboardState)
