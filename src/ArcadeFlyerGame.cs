@@ -9,10 +9,16 @@ namespace ArcadeFlyer2D
         // Graphics Manager
         private GraphicsDeviceManager graphics;
 
-        // Sprite Drawer
         private SpriteBatch spriteBatch;
 
+        private SpriteFont textFont;
 
+        private int life = 3;
+
+         private int score = 0;
+   
+   
+         private bool gameOver = false;
         private Player player;
 
         // private Enemy enemy;
@@ -25,6 +31,7 @@ namespace ArcadeFlyer2D
         private Texture2D playerProjectileSprite;
 
         private Texture2D enemyProjectileSprite;
+
 
         private int screenWidth = 1600;
         public int ScreenWidth
@@ -54,6 +61,8 @@ namespace ArcadeFlyer2D
 
             // Set up the directory containing the assets
             Content.RootDirectory = "Content";
+
+            textFont = Content.Load<SpriteFont>("Score");
 
             // Make mouse visible
             IsMouseVisible = true;
@@ -91,6 +100,13 @@ namespace ArcadeFlyer2D
         // Called every frame
         protected override void Update(GameTime gameTime)
         {   
+
+            if (gameOver)
+            {
+                // Return early, don't do anything else
+                return;
+            }
+
             player.Update(gameTime);
 
             foreach (Enemy enemy in enemies)
@@ -118,8 +134,16 @@ namespace ArcadeFlyer2D
                 if (!isplayerProjectile && player.Overlaps(p))
                 {
                     projectiles.Remove(p);
+
+                    life--;
+
+                    if (life < 1)
+                    {
+                        // End the game
+                        gameOver = true;
+                    }
                 }
-                else if (isplayerProjectile)
+                else if (isplayerProjectile){
             
             // for (int q = projectiles.Count - 1; q >= 0; q--)
             // {
@@ -144,8 +168,11 @@ namespace ArcadeFlyer2D
                             projectiles.Remove(p);
                             
                             enemies.Remove(e);
-                        }
 
+                            score++;
+                        }
+                        
+                    }
                         // else if(g.Overlaps(p))
                         // {
                         //     projectiles.Remove(p);
@@ -171,6 +198,25 @@ namespace ArcadeFlyer2D
         // Draw everything in the game
         protected override void Draw(GameTime gameTime)
         {
+
+            if (gameOver)
+            {
+                GraphicsDevice.Clear(Color.Black);
+
+                
+                spriteBatch.Begin();
+
+                
+                Vector2 textPosition = new Vector2(screenWidth / 2, screenHeight / 2);
+
+                spriteBatch.DrawString(textFont, $"Game Over :(\nFinal Score: {score}\nLife: {life}", textPosition, Color.White);
+                
+                spriteBatch.End();
+
+                return;
+            }
+
+
             // First clear the screen
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -193,6 +239,7 @@ namespace ArcadeFlyer2D
                 p.Draw(gameTime, spriteBatch);
             }
 
+             
             spriteBatch.End();
         }
 
@@ -209,7 +256,7 @@ namespace ArcadeFlyer2D
             {
                 projectileTexture = enemyProjectileSprite;
             }
-
+            // shotsFired += 1;
             Projectile firedProjectile = new Projectile(position, velocity, projectileTexture, projectileType);
             projectiles.Add(firedProjectile);
         }
