@@ -8,15 +8,15 @@ namespace ArcadeFlyer2D
     {
         private ArcadeFlyerGame root;
 
-        private float movementSpeed = 4.0f;
+        public float movementSpeed = 6.0f;
 
-         private Timer projectileCoolDown;
+        public Timer projectileCoolDown;
 
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 200.0f;
+            this.SpriteWidth = 100.0f;
 
             projectileCoolDown = new Timer(0.5f);
 
@@ -34,8 +34,8 @@ namespace ArcadeFlyer2D
             bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
             bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
             bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
-            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space); 
-              
+            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);
+
 
             if (upKeyPressed)
             {
@@ -57,7 +57,7 @@ namespace ArcadeFlyer2D
                 position.X += movementSpeed;
             }
 
-            if (spaceKeyPressed && !projectileCoolDown.Active)   
+            if (spaceKeyPressed && !projectileCoolDown.Active)
             {
                 Vector2 projectilePosition;
                 Vector2 projectileVelocity;
@@ -70,12 +70,12 @@ namespace ArcadeFlyer2D
         }
 
         public void Update(GameTime gameTime)
-        {   
+        {
             KeyboardState currentKeyboardState = Keyboard.GetState();
 
             HandleInput(currentKeyboardState);
 
-           projectileCoolDown.Update(gameTime);
+            projectileCoolDown.Update(gameTime);
         }
     }
 }

@@ -6,25 +6,25 @@ namespace ArcadeFlyer2D
     class Sprite
     {
         protected Vector2 position;
-public Vector2 Position
-{
-    get { return position; }
-    set { position = value; }
-}
+        public Vector2 Position
+        {
+            get { return position; }
+            set { position = value; }
+        }
 
-private Texture2D spriteImage;
-public Texture2D SpriteImage
-{
-    get { return spriteImage; }
-    set { spriteImage = value; }
-}
+        private Texture2D spriteImage;
+        public Texture2D SpriteImage
+        {
+            get { return spriteImage; }
+            set { spriteImage = value; }
+        }
 
-private float spriteWidth;
-public float SpriteWidth
-{
-    get { return spriteWidth; }
-    set { spriteWidth = value; }
-}
+        public float spriteWidth;
+        public float SpriteWidth
+        {
+            get { return spriteWidth; }
+            set { spriteWidth = value; }
+        }
 
         public float SpriteHeight
         {
@@ -53,7 +53,7 @@ public float SpriteWidth
             spriteBatch.Draw(spriteImage, PositionRectangle, Color.White);
         }
 
-         public bool Overlaps(Sprite otherSprite)
+        public bool Overlaps(Sprite otherSprite)
         {
             bool doesOverlap = this.PositionRectangle.Intersects(otherSprite.PositionRectangle);
             return doesOverlap;

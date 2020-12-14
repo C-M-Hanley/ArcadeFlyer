@@ -18,7 +18,7 @@ namespace ArcadeFlyer2D
         {
             // Initialize values
             this.velocity = velocity;
-            this.SpriteWidth = 55.0f;
+            this.SpriteWidth = 50.0f;
             this.SpriteImage = spriteImage;
             this.projectileType = projectileType;
         }

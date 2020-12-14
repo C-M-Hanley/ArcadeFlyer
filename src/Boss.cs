@@ -4,19 +4,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ArcadeFlyer2D
 {
-    class Enemy : Sprite
+    class Boss : Sprite
     {
         private ArcadeFlyerGame root;
 
-        private Timer projectileCoolDown;
+        public Timer projectileCoolDown;
         private Vector2 velocity;
 
-        public Enemy(ArcadeFlyerGame root, Vector2 position) : base(position)
+        public Boss(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 100.0f;
-            this.velocity = new Vector2(-3.0f, 7.0f);
+            this.SpriteWidth = 800.0f;
+            this.velocity = new Vector2(-2.0f);
             this.projectileCoolDown = new Timer(1.0f);
 
             LoadContent();
@@ -24,7 +24,7 @@ namespace ArcadeFlyer2D
 
         public void LoadContent()
         {
-            this.SpriteImage = root.Content.Load<Texture2D>("rhino");
+            this.SpriteImage = root.Content.Load<Texture2D>("Yoda");
         }
 
         public void Update(GameTime gameTime)

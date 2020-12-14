@@ -4,27 +4,27 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ArcadeFlyer2D
 {
-    class Enemy : Sprite
+    class smPower : Sprite
     {
         private ArcadeFlyerGame root;
 
         private Timer projectileCoolDown;
         private Vector2 velocity;
 
-        public Enemy(ArcadeFlyerGame root, Vector2 position) : base(position)
+        public smPower(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 100.0f;
-            this.velocity = new Vector2(-3.0f, 7.0f);
-            this.projectileCoolDown = new Timer(1.0f);
+            this.SpriteWidth = 50.0f;
+            this.velocity = new Vector2(-2.0f, 9.0f);
+            this.projectileCoolDown = new Timer(10.0f);
 
             LoadContent();
         }
 
         public void LoadContent()
         {
-            this.SpriteImage = root.Content.Load<Texture2D>("rhino");
+            this.SpriteImage = root.Content.Load<Texture2D>("PowerOrange");
         }
 
         public void Update(GameTime gameTime)
@@ -36,15 +36,6 @@ namespace ArcadeFlyer2D
             }
             projectileCoolDown.Update(gameTime);
 
-            if (!projectileCoolDown.Active)
-            {
-            projectileCoolDown.StartTimer();    
-            Vector2 projectilePosition = new Vector2(position.X, position.Y + SpriteHeight / 2);
-            Vector2 projectileVelocity = new Vector2(-5.0f, 0.0f);
-
-            root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Enemy);
-            
-            }
         }
     }
 }

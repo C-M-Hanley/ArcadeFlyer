@@ -15,22 +15,50 @@ namespace ArcadeFlyer2D
 
         private int life = 3;
 
-         private int score = 0;
-   
-   
-         private bool gameOver = false;
+        private int score = 0;
+
+
+        private bool gameOver = false;
         private Player player;
+
+
+        private List<Power> powers;
+        private Timer powerCreationTimer;
+
 
         // private Enemy enemy;
         private List<Enemy> enemies;
 
         private Timer enemyCreationTimer;
 
+        private List<NoPower> nopowers;
+
+        private Timer nopowerCreationTimer;
+
+        private List<sPower> spowers;
+
+        private Timer spowerCreationTimer;
+
+        private List<smPower> smpowers;
+
+        private Timer smpowerCreationTimer;
+
+        private List<bPower> bpowers;
+
+        private Timer bpowerCreationTimer;
+
+        private List<Boss> bosses;
+
+        private Timer bossCreationTimer;
+        private Texture2D bossProjectileSprite;
+
         private List<Projectile> projectiles;
 
         private Texture2D playerProjectileSprite;
 
         private Texture2D enemyProjectileSprite;
+
+        private Texture2D background;
 
 
         private int screenWidth = 1600;
@@ -46,8 +74,8 @@ namespace ArcadeFlyer2D
             get { return screenHeight; }
             set { screenHeight = value; }
         }
-        
-        
+
+
         // Initalized the game
         public ArcadeFlyerGame()
         {
@@ -69,16 +97,62 @@ namespace ArcadeFlyer2D
 
             Vector2 posistion = new Vector2(0.0f, 0.0f);
             player = new Player(this, posistion);
-            
+
 
             enemies = new List<Enemy>();
 
             enemies.Add(new Enemy(this, new Vector2(screenWidth, 0)));
-            
+
             enemyCreationTimer = new Timer(3.0f);
             enemyCreationTimer.StartTimer();
 
-            
+            nopowers = new List<NoPower>();
+
+            nopowers.Add(new NoPower(this, new Vector2(screenWidth, 0)));
+
+            nopowerCreationTimer = new Timer(17.0f);
+            nopowerCreationTimer.StartTimer();
+
+            spowers = new List<sPower>();
+
+            spowers.Add(new sPower(this, new Vector2(screenWidth, 0)));
+
+            spowerCreationTimer = new Timer(15.0f);
+            spowerCreationTimer.StartTimer();
+
+            smpowers = new List<smPower>();
+
+            smpowers.Add(new smPower(this, new Vector2(screenWidth, 0)));
+
+            smpowerCreationTimer = new Timer(15.0f);
+            smpowerCreationTimer.StartTimer();
+
+            bpowers = new List<bPower>();
+
+            bpowers.Add(new bPower(this, new Vector2(screenWidth, 0)));
+
+            bpowerCreationTimer = new Timer(15.0f);
+            bpowerCreationTimer.StartTimer();
+
+            enemyCreationTimer = new Timer(3.0f);
+            enemyCreationTimer.StartTimer();
+
+            bosses = new List<Boss>();
+
+            bosses.Add(new Boss(this, new Vector2(screenWidth, 0)));
+
+            bossCreationTimer = new Timer(30.0f);
+            bossCreationTimer.StartTimer();
+
+            powers = new List<Power>();
+
+            powers.Add(new Power(this, new Vector2(screenWidth, 0)));
+
+            powerCreationTimer = new Timer(20.0f);
+            powerCreationTimer.StartTimer();
+
+
+
             projectiles = new List<Projectile>();
         }
         // Initialize
@@ -95,11 +169,12 @@ namespace ArcadeFlyer2D
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerProjectileSprite = Content.Load<Texture2D>("Arrows");
             enemyProjectileSprite = Content.Load<Texture2D>("Yoda");
+            background = Content.Load<Texture2D>("Land");
         }
 
         // Called every frame
         protected override void Update(GameTime gameTime)
-        {   
+        {
 
             if (gameOver)
             {
@@ -114,9 +189,167 @@ namespace ArcadeFlyer2D
                 enemy.Update(gameTime);
             }
 
+            for (int nopower = nopowers.Count - 1; nopower >= 0; nopower--)
+            {
+                NoPower p = nopowers[nopower];
+                p.Update(gameTime);
 
-            // Update base game
-            base.Update(gameTime);
+                if (player.Overlaps(p))
+                {
+                    nopowers.Remove(p);
+                    //power effects here.
+                    player.movementSpeed = player.movementSpeed - 10;
+                    player.projectileCoolDown = player.projectileCoolDown = new Timer(0.7f);
+
+                    if (player.movementSpeed <= -4)
+                    {
+                        player.movementSpeed = -4;
+                    }
+                }
+            }
+
+            for (int spower = spowers.Count - 1; spower >= 0; spower--)
+            {
+                sPower p = spowers[spower];
+                p.Update(gameTime);
+
+                if (player.Overlaps(p))
+                {
+                    spowers.Remove(p);
+                    //power effects here.
+                    player.movementSpeed = player.movementSpeed + 3;
+                    player.projectileCoolDown = player.projectileCoolDown = new Timer(0.3f);
+
+                    if (player.movementSpeed >= 20)
+                    {
+                        player.movementSpeed = 20;
+                    }
+                }
+            }
+
+            for (int bpower = bpowers.Count - 1; bpower >= 0; bpower--)
+            {
+                bPower p = bpowers[bpower];
+                p.Update(gameTime);
+
+                if (player.Overlaps(p))
+                {
+                    foreach (Enemy enemy in enemies)
+                    {
+                        enemy.Update(gameTime);
+
+                        bpowers.Remove(p);
+                        //power effects here.
+                        player.SpriteWidth = player.SpriteWidth - 10;
+                        enemy.SpriteWidth = enemy.SpriteWidth - 50;
+
+                        if (player.SpriteWidth <= 20)
+                        {
+                            player.SpriteWidth = 20;
+                        }
+                    }
+                }
+            }
+
+            for (int smpower = smpowers.Count - 1; smpower >= 0; smpower--)
+            {
+                smPower p = smpowers[smpower];
+                p.Update(gameTime);
+
+                if (player.Overlaps(p))
+                {
+                    foreach (Enemy enemy in enemies)
+                    {
+                        enemy.Update(gameTime);
+
+                        smpowers.Remove(p);
+                        //power effects here.
+                        player.SpriteWidth = player.SpriteWidth + 15;
+                        enemy.SpriteWidth = enemy.SpriteWidth + 55;
+
+                        player.SpriteImage = player.SpriteImage = Content.Load<Texture2D>("Yoda");
+
+                        if (player.SpriteWidth >= 200)
+                        {
+                            player.SpriteWidth = 200;
+                        }
+                    }
+                }
+            }
+
+            foreach (Boss boss in bosses)
+            {
+
+                boss.Update(gameTime);
+                foreach (Projectile projectile in projectiles)
+                {
+
+                    projectile.Update();
+
+                    bool isplayerProjectile = projectile.ProjectileType == ProjectileType.Player;
+                    bool isenemyProjectile = projectile.ProjectileType == ProjectileType.Enemy;
+                    // !isplayerProjectile && player.Overlaps(p)
+
+                    if (isplayerProjectile && projectile.Overlaps(boss))
+                    {
+                        boss.SpriteWidth = boss.SpriteWidth - 100;
+
+                        if (boss.SpriteWidth <= 0)
+                        {
+                            boss.projectileCoolDown = boss.projectileCoolDown = new Timer(100.0f);
+                            boss.SpriteWidth = 0;
+                        }
+
+                    }
+
+                    if (boss.Overlaps(player))
+                    {
+                        life = 0;
+
+                        if (life < 1)
+                        {
+                            // End the game
+                            gameOver = true;
+                        }
+                    }
+                }
+            }
+
+
+            // for (int power = powers.Count - 1; power >= 0; power--)
+            // {
+            //     Projectile z = projectiles[power];
+            //     z.Update();
+
+            //     Power p = powers[power];
+            //     p.Update(gameTime);
+
+            //     bool isenemyProjectile = z.ProjectileType == ProjectileType.Enemy;
+
+            //     {
+
+            //         if (player.Overlaps(p))
+            //         {
+            //             projectiles.Remove(z);
+            //             //power effects here.
+
+            //         }
+            //     }
+
+            // if (player.Overlaps(p))
+            // {
+            //     powers.Remove(p);
+            //     //power effects here.
+            //     player.movementSpeed = player.movementSpeed + 3;
+
+            //     if (player.movementSpeed >= 20)
+            //     {
+            //         player.movementSpeed = 20;
+            //     }
+            // }
+            // }
+
+
 
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
@@ -124,12 +357,57 @@ namespace ArcadeFlyer2D
                 Projectile p = projectiles[i];
                 p.Update();
 
-                Projectile g = projectiles[i];
-                g.Update();
-
                 bool isplayerProjectile = p.ProjectileType == ProjectileType.Player;
 
-                bool isenemyProjectile = g.ProjectileType == ProjectileType.Enemy;
+                bool isenemyProjectile = p.ProjectileType == ProjectileType.Enemy;
+                for (int enemy = enemies.Count - 1; enemy >= 0; enemy--)
+                {
+
+                    Enemy e = enemies[enemy];
+                    if (e.Overlaps(player))
+                    {
+                        life = 0;
+                        enemies.Remove(e);
+                        if (life < 1)
+                        {
+                            // End the game
+                            gameOver = true;
+                        }
+                    }
+
+
+
+                    for (int power = powers.Count - 1; power >= 0; power--)
+                    {
+
+                        Power o = powers[power];
+                        o.Update(gameTime);
+
+
+
+                        if (o.Overlaps(player))
+                        {
+                            projectiles.Remove(p);
+                            enemies.Remove(e);
+                            i = 0;
+                        }
+
+
+
+                        // if (player.Overlaps(p))
+                        // {
+                        //     powers.Remove(p);
+                        //     //power effects here.
+                        //     player.movementSpeed = player.movementSpeed + 3;
+
+                        //     if (player.movementSpeed >= 20)
+                        //     {
+                        //         player.movementSpeed = 20;
+                        //     }
+                        // }
+                    }
+                }
+
 
                 if (!isplayerProjectile && player.Overlaps(p))
                 {
@@ -137,64 +415,122 @@ namespace ArcadeFlyer2D
 
                     life--;
 
+
+
                     if (life < 1)
                     {
                         // End the game
                         gameOver = true;
                     }
                 }
-                else if (isplayerProjectile){
-            
-            // for (int q = projectiles.Count - 1; q >= 0; q--)
-            // {
-            //     Projectile g = projectiles[q];
-            //     g.Update();
+                else if (isplayerProjectile)
+                {
 
-            //     bool isenemyProjectile = g.ProjectileType == ProjectileType.Enemy;
-                
-                // if (!isplayerProjectile && g.Overlaps(g))
-                // {
-                //     projectiles.Remove(p);
-                //     projectiles.Remove(g);
-                // }
+                    for (int a = 0; a < i; a++)
+                    {
+                        Projectile other = projectiles[a];
 
+                        if (other.ProjectileType == ProjectileType.Player)
+                        {
+                            continue;
+                        }
+
+                        if (other.Overlaps(p))
+                        {
+                            projectiles.Remove(p);
+                            projectiles.Remove(other);
+                            a--;
+                            i--;
+                        }
+                    }
 
                     for (int x = enemies.Count - 1; x >= 0; x--)
                     {
+
                         Enemy e = enemies[x];
 
                         if (e.Overlaps(p))
                         {
                             projectiles.Remove(p);
-                            
+
                             enemies.Remove(e);
 
                             score++;
                         }
-                        
-                    }
-                        // else if(g.Overlaps(p))
-                        // {
-                        //     projectiles.Remove(p);
-                            
-                        //     projectiles.Remove(g);
-                        // }
+
                     }
                 }
-
-                 if (enemyCreationTimer.Ready)
-                {
-                    enemies.Add(new Enemy(this, new Vector2(screenWidth, 0.0f)));
-
-                    enemyCreationTimer.StartTimer();
-                }
-
-                enemyCreationTimer.Update(gameTime);
-
             }
-            
-        
-    
+
+            if (enemyCreationTimer.Ready)
+            {
+                enemies.Add(new Enemy(this, new Vector2(screenWidth, 0.0f)));
+
+                enemyCreationTimer.StartTimer();
+            }
+
+            if (nopowerCreationTimer.Ready)
+            {
+                nopowers.Add(new NoPower(this, new Vector2(screenWidth, 0.0f)));
+
+                nopowerCreationTimer.StartTimer();
+            }
+
+            if (spowerCreationTimer.Ready)
+            {
+                spowers.Add(new sPower(this, new Vector2(screenWidth, 0.0f)));
+
+                spowerCreationTimer.StartTimer();
+            }
+
+            if (smpowerCreationTimer.Ready)
+            {
+                smpowers.Add(new smPower(this, new Vector2(screenWidth, 0.0f)));
+
+                smpowerCreationTimer.StartTimer();
+            }
+
+            if (bpowerCreationTimer.Ready)
+            {
+                bpowers.Add(new bPower(this, new Vector2(screenWidth, 0.0f)));
+
+                bpowerCreationTimer.StartTimer();
+            }
+
+            if (bossCreationTimer.Ready)
+            {
+                bosses.Add(new Boss(this, new Vector2(screenWidth, 0.0f)));
+
+                bossCreationTimer.StartTimer();
+            }
+
+            if (powerCreationTimer.Ready)
+            {
+                powers.Add(new Power(this, new Vector2(screenWidth, 0.0f)));
+
+                powerCreationTimer.StartTimer();
+            }
+
+            enemyCreationTimer.Update(gameTime);
+
+            nopowerCreationTimer.Update(gameTime);
+
+            spowerCreationTimer.Update(gameTime);
+
+            smpowerCreationTimer.Update(gameTime);
+
+            bpowerCreationTimer.Update(gameTime);
+
+            bossCreationTimer.Update(gameTime);
+
+            powerCreationTimer.Update(gameTime);
+            // Update base game
+            base.Update(gameTime);
+
+        }
+
+
+
         // Draw everything in the game
         protected override void Draw(GameTime gameTime)
         {
@@ -203,14 +539,14 @@ namespace ArcadeFlyer2D
             {
                 GraphicsDevice.Clear(Color.Black);
 
-                
+
                 spriteBatch.Begin();
 
-                
+
                 Vector2 textPosition = new Vector2(screenWidth / 2, screenHeight / 2);
 
                 spriteBatch.DrawString(textFont, $"Game Over :(\nFinal Score: {score}\nLife: {life}", textPosition, Color.White);
-                
+
                 spriteBatch.End();
 
                 return;
@@ -223,14 +559,45 @@ namespace ArcadeFlyer2D
             spriteBatch.Begin();
             // drawing happens here
             // Rectangle playerDestinationRect = new Rectangle(0,0,playerImage.Width, playerImage.Height);
-            
-            // spriteBatch.Draw(playerImage, playerDestinationRect, Color.White);
 
+            // spriteBatch.Draw(playerImage, playerDestinationRect, Color.White);
+            Rectangle screenSize = new Rectangle(0, 0, ScreenWidth, screenHeight);
+            spriteBatch.Draw(background, screenSize, Color.White);
             player.Draw(gameTime, spriteBatch);
-           
+
             foreach (Enemy enemy in enemies)
             {
                 enemy.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (NoPower nopower in nopowers)
+            {
+                nopower.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (sPower spower in spowers)
+            {
+                spower.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (smPower smpower in smpowers)
+            {
+                smpower.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (bPower bpower in bpowers)
+            {
+                bpower.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (Boss boss in bosses)
+            {
+                boss.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (Power power in powers)
+            {
+                power.Draw(gameTime, spriteBatch);
             }
 
 
@@ -239,7 +606,7 @@ namespace ArcadeFlyer2D
                 p.Draw(gameTime, spriteBatch);
             }
 
-             
+            // spriteBatch.Draw(winter);
             spriteBatch.End();
         }
 
@@ -247,7 +614,7 @@ namespace ArcadeFlyer2D
         {
 
             Texture2D projectileTexture;
-            
+
             if (projectileType == ProjectileType.Player)
             {
                 projectileTexture = playerProjectileSprite;
