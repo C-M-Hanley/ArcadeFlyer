@@ -167,9 +167,9 @@ namespace ArcadeFlyer2D
             // playerImage = Content.Load<Texture2D>("MainChar");
             // Create the sprite batch
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            playerProjectileSprite = Content.Load<Texture2D>("Arrows");
-            enemyProjectileSprite = Content.Load<Texture2D>("Yoda");
-            background = Content.Load<Texture2D>("Land");
+            playerProjectileSprite = Content.Load<Texture2D>("Fire");
+            enemyProjectileSprite = Content.Load<Texture2D>("Laser");
+            background = Content.Load<Texture2D>("Space");
         }
 
         // Called every frame
@@ -198,7 +198,7 @@ namespace ArcadeFlyer2D
                 {
                     nopowers.Remove(p);
                     //power effects here.
-                    player.movementSpeed = player.movementSpeed - 10;
+                    player.movementSpeed = player.movementSpeed - 7;
                     player.projectileCoolDown = player.projectileCoolDown = new Timer(0.7f);
 
                     if (player.movementSpeed <= -4)
@@ -212,19 +212,23 @@ namespace ArcadeFlyer2D
             {
                 sPower p = spowers[spower];
                 p.Update(gameTime);
-
+            foreach (Boss boss in bosses)
+                    {
                 if (player.Overlaps(p))
                 {
                     spowers.Remove(p);
                     //power effects here.
                     player.movementSpeed = player.movementSpeed + 3;
                     player.projectileCoolDown = player.projectileCoolDown = new Timer(0.3f);
+                    boss.projectileCoolDown = boss.projectileCoolDown = new Timer(0.7f);
+                    // boss.velocity = boss.velocity = new Vector2(-100.0f, 1.0f);
 
                     if (player.movementSpeed >= 20)
                     {
                         player.movementSpeed = 20;
                     }
                 }
+            }
             }
 
             for (int bpower = bpowers.Count - 1; bpower >= 0; bpower--)
@@ -234,19 +238,43 @@ namespace ArcadeFlyer2D
 
                 if (player.Overlaps(p))
                 {
+                    foreach (Boss boss in bosses)
+                    {
                     foreach (Enemy enemy in enemies)
                     {
                         enemy.Update(gameTime);
 
                         bpowers.Remove(p);
                         //power effects here.
-                        player.SpriteWidth = player.SpriteWidth - 10;
-                        enemy.SpriteWidth = enemy.SpriteWidth - 50;
+                        player.SpriteWidth = player.SpriteWidth - 15;
+                        enemy.SpriteWidth = enemy.SpriteWidth - 75;
+                        boss.SpriteWidth = boss.SpriteWidth - 100;
 
                         if (player.SpriteWidth <= 20)
                         {
                             player.SpriteWidth = 20;
                         }
+                        if (boss.SpriteWidth <= 0)
+                        {
+                            boss.projectileCoolDown = boss.projectileCoolDown = new Timer(10000.0f);
+                            boss.SpriteWidth = 0;
+                        }
+                        if (boss.SpriteWidth <= 0 && player.Overlaps(boss))
+                        {
+                            bosses.Remove(boss); 
+                        }
+
+                        if (player.Overlaps(boss) && boss.SpriteWidth >= 1) 
+                        {
+                        life = 0;
+                        
+                        }
+                        if (life < 1)
+                        {
+                            // End the game
+                            gameOver = true;
+                        }
+                    }
                     }
                 }
             }
@@ -292,17 +320,22 @@ namespace ArcadeFlyer2D
 
                     if (isplayerProjectile && projectile.Overlaps(boss))
                     {
-                        boss.SpriteWidth = boss.SpriteWidth - 100;
+                        boss.SpriteWidth = boss.SpriteWidth - 30;
 
                         if (boss.SpriteWidth <= 0)
                         {
-                            boss.projectileCoolDown = boss.projectileCoolDown = new Timer(100.0f);
+                            boss.projectileCoolDown = boss.projectileCoolDown = new Timer(10000.0f);
                             boss.SpriteWidth = 0;
+                        }
+
+                        if (boss.SpriteWidth <= 0 && player.Overlaps(boss))
+                        {
+                            bosses.Remove(boss);
                         }
 
                     }
 
-                    if (boss.Overlaps(player))
+                    if (boss.Overlaps(player) && boss.SpriteWidth >= 1)
                     {
                         life = 0;
 

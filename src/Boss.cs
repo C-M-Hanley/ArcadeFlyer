@@ -9,22 +9,22 @@ namespace ArcadeFlyer2D
         private ArcadeFlyerGame root;
 
         public Timer projectileCoolDown;
-        private Vector2 velocity;
+        public Vector2 velocity;
 
         public Boss(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             this.root = root;
             this.position = position;
             this.SpriteWidth = 800.0f;
-            this.velocity = new Vector2(-2.0f);
-            this.projectileCoolDown = new Timer(1.0f);
+            this.velocity = new Vector2(-1.0f, 1.0f);
+            this.projectileCoolDown = new Timer(0.05f);
 
             LoadContent();
         }
 
         public void LoadContent()
         {
-            this.SpriteImage = root.Content.Load<Texture2D>("Yoda");
+            this.SpriteImage = root.Content.Load<Texture2D>("Deathstar");
         }
 
         public void Update(GameTime gameTime)

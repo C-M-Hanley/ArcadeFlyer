@@ -16,7 +16,7 @@ namespace ArcadeFlyer2D
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 100.0f;
+            this.SpriteWidth = 130.0f;
 
             projectileCoolDown = new Timer(0.5f);
 
@@ -25,7 +25,7 @@ namespace ArcadeFlyer2D
 
         public void LoadContent()
         {
-            this.SpriteImage = root.Content.Load<Texture2D>("Hunter");
+            this.SpriteImage = root.Content.Load<Texture2D>("Mandalorian");
         }
 
         private void HandleInput(KeyboardState currentKeyboardState)
@@ -62,7 +62,7 @@ namespace ArcadeFlyer2D
                 Vector2 projectilePosition;
                 Vector2 projectileVelocity;
 
-                projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 2));
+                projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 7));
                 projectileVelocity = new Vector2(10.0f, 0.0f);
                 root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
                 projectileCoolDown.StartTimer();
