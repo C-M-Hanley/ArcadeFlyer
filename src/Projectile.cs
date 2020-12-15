@@ -5,7 +5,7 @@ namespace ArcadeFlyer2D
 {
     class Projectile : Sprite
     {
-        private Vector2 velocity;
+        public Vector2 velocity;
 
         private ProjectileType projectileType;
         public ProjectileType ProjectileType
@@ -18,7 +18,7 @@ namespace ArcadeFlyer2D
         {
             // Initialize values
             this.velocity = velocity;
-            this.SpriteWidth = 80.0f;
+            this.SpriteWidth = 100.0f;
             this.SpriteImage = spriteImage;
             this.projectileType = projectileType;
         }

@@ -12,11 +12,13 @@ namespace ArcadeFlyer2D
 
         public Timer projectileCoolDown;
 
+        public Vector2 projectileVelocity;
+
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 130.0f;
+            this.SpriteWidth = 100.0f;
 
             projectileCoolDown = new Timer(0.5f);
 
@@ -36,6 +38,13 @@ namespace ArcadeFlyer2D
             bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
             bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);
 
+            if (currentKeyboardState.IsKeyDown(Keys.M))
+            {
+                movementSpeed = movementSpeed = 40;
+                projectileCoolDown = projectileCoolDown = new Timer(0.05f);
+                SpriteWidth = SpriteWidth = 20;
+                SpriteImage = SpriteImage = root.Content.Load<Texture2D>("Mandalorian");
+            }
 
             if (upKeyPressed)
             {
@@ -62,7 +71,7 @@ namespace ArcadeFlyer2D
                 Vector2 projectilePosition;
                 Vector2 projectileVelocity;
 
-                projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 7));
+                projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 2));
                 projectileVelocity = new Vector2(10.0f, 0.0f);
                 root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
                 projectileCoolDown.StartTimer();

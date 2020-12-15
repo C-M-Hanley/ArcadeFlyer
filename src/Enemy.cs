@@ -15,9 +15,9 @@ namespace ArcadeFlyer2D
         {
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 250.0f;
-            this.velocity = new Vector2(-0.0f, 0.0f);
-            this.projectileCoolDown = new Timer(100000.0f);
+            this.SpriteWidth = 200.0f;
+            this.velocity = new Vector2(-3.0f, 7.0f);
+            this.projectileCoolDown = new Timer(1.0f);
 
             LoadContent();
         }

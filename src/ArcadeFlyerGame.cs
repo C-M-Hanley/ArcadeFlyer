@@ -47,6 +47,14 @@ namespace ArcadeFlyer2D
 
         private Timer bpowerCreationTimer;
 
+        private List<dPower> dpowers;
+
+        private Timer dpowerCreationTimer;
+
+        private List<zPower> zpowers;
+
+        private Timer zpowerCreationTimer;
+
         private List<Boss> bosses;
 
         private Timer bossCreationTimer;
@@ -134,6 +142,20 @@ namespace ArcadeFlyer2D
             bpowerCreationTimer = new Timer(15.0f);
             bpowerCreationTimer.StartTimer();
 
+            dpowers = new List<dPower>();
+
+            dpowers.Add(new dPower(this, new Vector2(screenWidth, 0)));
+
+            dpowerCreationTimer = new Timer(15.0f);
+            dpowerCreationTimer.StartTimer();
+            
+            zpowerCreationTimer = new Timer(15.0f);
+            zpowerCreationTimer.StartTimer();
+
+            zpowers = new List<zPower>();
+
+            zpowers.Add(new zPower(this, new Vector2(screenWidth, 0)));
+
             enemyCreationTimer = new Timer(3.0f);
             enemyCreationTimer.StartTimer();
 
@@ -214,15 +236,24 @@ namespace ArcadeFlyer2D
                 p.Update(gameTime);
             foreach (Boss boss in bosses)
                     {
+                        foreach (Projectile x in projectiles)
+                    {
+                        if (player.Overlaps(p))
+                        {
+                            player.projectileVelocity = player.projectileVelocity = new Vector2(-90000.0f, -10.0f);
+                        }
+                    }
+                        
                 if (player.Overlaps(p))
                 {
                     spowers.Remove(p);
                     //power effects here.
                     player.movementSpeed = player.movementSpeed + 3;
                     player.projectileCoolDown = player.projectileCoolDown = new Timer(0.3f);
-                    boss.projectileCoolDown = boss.projectileCoolDown = new Timer(0.7f);
-                    // boss.velocity = boss.velocity = new Vector2(-100.0f, 1.0f);
-
+                    
+                    life = life + 1;
+                    // player.projectileVelocity = player.projectileVelocity = new Vector2(90000.0f, -10.0f);
+                    
                     if (player.movementSpeed >= 20)
                     {
                         player.movementSpeed = 20;
@@ -248,17 +279,19 @@ namespace ArcadeFlyer2D
                         //power effects here.
                         player.SpriteWidth = player.SpriteWidth - 15;
                         enemy.SpriteWidth = enemy.SpriteWidth - 75;
-                        boss.SpriteWidth = boss.SpriteWidth - 100;
+                        player.SpriteImage = player.SpriteImage = Content.Load<Texture2D>("Mandalorian");
+                        
 
                         if (player.SpriteWidth <= 20)
                         {
                             player.SpriteWidth = 20;
                         }
-                        if (boss.SpriteWidth <= 0)
+
+                        if (enemy.SpriteWidth <= 0)
                         {
-                            boss.projectileCoolDown = boss.projectileCoolDown = new Timer(10000.0f);
-                            boss.SpriteWidth = 0;
+                            enemy.SpriteWidth = 0;
                         }
+
                         if (boss.SpriteWidth <= 0 && player.Overlaps(boss))
                         {
                             bosses.Remove(boss); 
@@ -269,12 +302,62 @@ namespace ArcadeFlyer2D
                         life = 0;
                         
                         }
+                         if(life <= 0)
+                        {
+                            life = life = 0;
+                        }
                         if (life < 1)
                         {
                             // End the game
                             gameOver = true;
                         }
                     }
+                    }
+                }
+            }
+
+            for (int dpower = dpowers.Count - 1; dpower >= 0; dpower--)
+            {
+                dPower p = dpowers[dpower];
+                p.Update(gameTime);
+                foreach (Boss boss in bosses)
+                {
+                    if (player.Overlaps(p))
+                    {
+                        dpowers.Remove(p);
+                        boss.velocity = boss.velocity = new Vector2(-1.0f, 0.0f);
+                        boss.projectileCoolDown = boss.projectileCoolDown = new Timer(0.05f);
+                        boss.SpriteWidth = boss.SpriteWidth - 100;
+                    }
+                    
+                    if (boss.SpriteWidth <= 0)
+                    {
+                        boss.projectileCoolDown = boss.projectileCoolDown = new Timer(1000000.0f);
+                        boss.SpriteWidth = 0;
+                        boss.velocity = boss.velocity = new Vector2(0f, 1000.0f);
+                    }
+                }
+            }
+
+            for (int zpower = zpowers.Count - 1; zpower >= 0; zpower--)
+            {
+                zPower p = zpowers[zpower];
+                p.Update(gameTime);
+                foreach (Boss boss in bosses)
+                {
+                    if (player.Overlaps(p))
+                    {
+                        zpowers.Remove(p);
+                        boss.velocity = boss.velocity = new Vector2(-2.0f, 3.0f);
+                        boss.projectileCoolDown = boss.projectileCoolDown = new Timer(0.05f);
+                        boss.SpriteWidth = boss.SpriteWidth + 100;
+                    }
+                    
+                    if (boss.SpriteWidth <= 0)
+                    {
+                        boss.projectileCoolDown = boss.projectileCoolDown = new Timer(1000000.0f);
+                        boss.SpriteWidth = 0;
+                        boss.velocity = boss.velocity = new Vector2(0f, 1000.0f); 
                     }
                 }
             }
@@ -337,7 +420,11 @@ namespace ArcadeFlyer2D
 
                     if (boss.Overlaps(player) && boss.SpriteWidth >= 1)
                     {
-                        life = 0;
+                        life = life = 0;
+                        if(life <= 0)
+                        {
+                            life = life = 0;
+                        }
 
                         if (life < 1)
                         {
@@ -399,8 +486,12 @@ namespace ArcadeFlyer2D
                     Enemy e = enemies[enemy];
                     if (e.Overlaps(player))
                     {
-                        life = 0;
+                        life = life - 3;
                         enemies.Remove(e);
+                        if(life <= 0)
+                        {
+                            life = life = 0;
+                        }
                         if (life < 1)
                         {
                             // End the game
@@ -448,7 +539,10 @@ namespace ArcadeFlyer2D
 
                     life--;
 
-
+                    if(life <= 0)
+                        {
+                            life = life = 0;
+                        }
 
                     if (life < 1)
                     {
@@ -530,6 +624,20 @@ namespace ArcadeFlyer2D
                 bpowerCreationTimer.StartTimer();
             }
 
+            if (dpowerCreationTimer.Ready)
+            {
+                dpowers.Add(new dPower(this, new Vector2(screenWidth, 0.0f)));
+
+                dpowerCreationTimer.StartTimer();
+            }
+
+            if (zpowerCreationTimer.Ready)
+            {
+                zpowers.Add(new zPower(this, new Vector2(screenWidth, 0.0f)));
+
+                zpowerCreationTimer.StartTimer();
+            }
+
             if (bossCreationTimer.Ready)
             {
                 bosses.Add(new Boss(this, new Vector2(screenWidth, 0.0f)));
@@ -553,6 +661,10 @@ namespace ArcadeFlyer2D
             smpowerCreationTimer.Update(gameTime);
 
             bpowerCreationTimer.Update(gameTime);
+
+            dpowerCreationTimer.Update(gameTime);
+
+            zpowerCreationTimer.Update(gameTime);
 
             bossCreationTimer.Update(gameTime);
 
@@ -601,6 +713,7 @@ namespace ArcadeFlyer2D
             foreach (Enemy enemy in enemies)
             {
                 enemy.Draw(gameTime, spriteBatch);
+                // spriteBatch.DrawString(textFont, $"                                                                                   ESize: {enemy.SpriteWidth}", Vector2.Zero, Color.Black);
             }
 
             foreach (NoPower nopower in nopowers)
@@ -623,6 +736,16 @@ namespace ArcadeFlyer2D
                 bpower.Draw(gameTime, spriteBatch);
             }
 
+            foreach (dPower dpower in dpowers)
+            {
+                dpower.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (zPower zpower in zpowers)
+            {
+                zpower.Draw(gameTime, spriteBatch);
+            }
+
             foreach (Boss boss in bosses)
             {
                 boss.Draw(gameTime, spriteBatch);
@@ -638,6 +761,8 @@ namespace ArcadeFlyer2D
             {
                 p.Draw(gameTime, spriteBatch);
             }
+
+             spriteBatch.DrawString(textFont, $"Life: {life}  Score: {score}  Size: %{player.SpriteWidth}  Speed:{player.movementSpeed}", Vector2.Zero, Color.Black);
 
             // spriteBatch.Draw(winter);
             spriteBatch.End();
