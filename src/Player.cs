@@ -44,6 +44,12 @@ namespace ArcadeFlyer2D
                 projectileCoolDown = projectileCoolDown = new Timer(0.05f);
                 SpriteWidth = SpriteWidth = 20;
                 SpriteImage = SpriteImage = root.Content.Load<Texture2D>("Mandalorian");
+                root.life++;
+            }
+
+            if (currentKeyboardState.IsKeyDown(Keys.N))
+            {
+                root.life++;
             }
 
             if (upKeyPressed)

@@ -13,7 +13,7 @@ namespace ArcadeFlyer2D
 
         private SpriteFont textFont;
 
-        private int life = 3;
+        public int life = 3;
 
         private int score = 0;
 
